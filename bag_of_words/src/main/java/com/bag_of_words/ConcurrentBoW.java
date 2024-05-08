@@ -14,6 +14,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ConcurrentBoW {
     private static final String INPUT_FILE = "C:/Users/user/Documents/Courses/Y3S2/WIF3011 CP/Bag-of-words/bag_of_words/src/main/resources/war_and_peace.txt";
@@ -87,7 +90,7 @@ class FindFrequencyConcurrent {
 
     public HashMap<String, Word> getFrequency() {
         FindFrequencyWorker[] fnw = new FindFrequencyWorker[numOfThreads];
-        Thread[] threads = new Thread[numOfThreads];
+        ExecutorService es = Executors.newFixedThreadPool(numOfThreads);
         int totalWords = words.size();
         int range = totalWords / numOfThreads;
 
@@ -95,14 +98,12 @@ class FindFrequencyConcurrent {
             int start = i * range;
             int end = (i == numOfThreads - 1) ? totalWords : (start + range);
             fnw[i] = new FindFrequencyWorker(words.subList(start, end));
-            threads[i] = new Thread(fnw[i]);
-            threads[i].start();
+            es.execute(fnw[i]);
         }
 
         try {
-            for (Thread thread : threads) {
-                thread.join();
-            }
+            es.awaitTermination(1, TimeUnit.SECONDS);
+            es.shutdown();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
