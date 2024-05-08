@@ -1,14 +1,8 @@
 package com.tntco.bagofwordsmavenfx;
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpExchange;
 
-import java.io.IOException;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,63 +14,60 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-/**
- * JavaFX App
- */
-public class App extends Application {
-
+public class ConcurrentDriver {
     private static final String INPUT_FILE = "C:\\Users\\Asus\\IdeaProjects\\Bag-of-words\\src\\main\\resources\\com\\tntco\\bagofwordsmavenfx\\war_and_peace.txt";
-    static Map<String, Integer> wordFrequencies = new HashMap<>();
     private static final int NUMBER_OF_THREADS = 8;
 
-    private static Scene scene;
+    public static void main(String[] args) throws IOException {
+        BlockingHashMap blockingHashMap = new BlockingHashMap();
+        Worker[] workers = new Worker[NUMBER_OF_THREADS];
+        Thread[] t = new Thread[NUMBER_OF_THREADS];
+        String[] words;
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 480);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
-
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
-    }
-
-    public static void main(String[] args) {
         try {
             String text = new String(Files.readAllBytes(Paths.get(INPUT_FILE)));
-            System.out.println("Processing");
             text = cleanText(text);
-            System.out.println("Processing Done");
 
-            createBagOfWords(text);
+            // Trim the spaces between words
+            text = text.replaceAll("\\s+", " ");
+            words = text.split(" ");
 
-            for (Map.Entry<String, Integer> entry : wordFrequencies.entrySet()) {
-                System.out.println("Word: " + entry.getKey() + ", Count: " + entry.getValue());
+            int begin = 0;
+            int range = words.length / NUMBER_OF_THREADS;
+            int next = range;
+
+            for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+                if (i == NUMBER_OF_THREADS - 1) {
+                    next = words.length;
+                }
+                workers[i] = new Worker(begin, next, words, blockingHashMap);
+                t[i] = new Thread(workers[i]);
+                t[i].start();
+                begin = next;
+                next += range;
             }
 
-            launch();
+            try {
+                for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+                    t[i].join();
+                }
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+
+            blockingHashMap.printCounts();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
+
     }
 
-    public static String cleanText(String text) {
+    private static String cleanText(String text) {
         text = text.replaceAll("(?<![a-zA-Z])'|'(?![a-zA-Z])", " ").replaceAll("[^a-zA-Z' ]", " ").toLowerCase();
         return text;
     }
 
-    public static void createBagOfWords(String text) {
-        String[] words = text.split(" ");
-        for (String word : words) {
-            wordFrequencies.put(word, wordFrequencies.getOrDefault(word, 0) + 1);
-        }
-    }
 
     public static void startServer(String text) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
