@@ -107,16 +107,7 @@ public class Server {
             long methodOneStartTime = System.currentTimeMillis();
             Map<String, Integer> wordFrequencies = createBagOfWordsSequential(text);
             long methodOneEndTime = System.currentTimeMillis();
-
             wordFrequencies = sortByValueDescending(wordFrequencies);
-
-            // Test output
-            int i = 0;
-            for (Map.Entry<String, Integer> entry : wordFrequencies.entrySet()) {
-                System.out.println((String.format("%2d : %-14s%5d%n", (i + 1), entry.getKey(), entry.getValue())));
-                i++;
-            }
-
             long totalTimeMethodOne = methodOneEndTime - methodOneStartTime;
 
             long methodTwoStartTime = System.currentTimeMillis();
@@ -201,7 +192,7 @@ public class Server {
 
             for (int i = 0; i < words.size(); i += chunkSize) {
                 List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
-                executor.execute(new Worker(chunk, blockingHashMap));
+                executor.execute(new FindFrequencyWorker2(chunk, blockingHashMap));
             }
 
             executor.shutdown();
@@ -261,7 +252,9 @@ public class Server {
         private Map<String, Integer> countWordFrequencies(List<String> words) {
             Map<String, Integer> wordCount = new HashMap<>();
             for (String word : words) {
-                wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+                if (!word.isEmpty()) {
+                    wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+                }
             }
             return wordCount;
         }
@@ -314,11 +307,11 @@ class FindFrequencyWorker implements Runnable {
 
 
 
-class Worker implements Runnable {
+class FindFrequencyWorker2 implements Runnable {
     private BlockingHashMap blockingHashMap;
     private List<String> words;
 
-    public Worker(List<String> words, BlockingHashMap blockingHashMap) {
+    public FindFrequencyWorker2(List<String> words, BlockingHashMap blockingHashMap) {
         this.words = words;
         this.blockingHashMap = blockingHashMap;
     }
