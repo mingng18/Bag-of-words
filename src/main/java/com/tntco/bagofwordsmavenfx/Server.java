@@ -105,8 +105,18 @@ public class Server {
             System.out.println("Processing Done");
 
             long methodOneStartTime = System.currentTimeMillis();
-            Map<String, Integer> wordFrequencies = createBagOfWords(text);
+            Map<String, Integer> wordFrequencies = createBagOfWordsSequential(text);
             long methodOneEndTime = System.currentTimeMillis();
+
+            wordFrequencies = sortByValueDescending(wordFrequencies);
+
+            // Test output
+            int i = 0;
+            for (Map.Entry<String, Integer> entry : wordFrequencies.entrySet()) {
+                System.out.println((String.format("%2d : %-14s%5d%n", (i + 1), entry.getKey(), entry.getValue())));
+                i++;
+            }
+
             long totalTimeMethodOne = methodOneEndTime - methodOneStartTime;
 
             long methodTwoStartTime = System.currentTimeMillis();
@@ -142,7 +152,7 @@ public class Server {
         }
 
         // create bag of words using sequential processing
-        private Map<String, Integer> createBagOfWords(String text) {
+        private Map<String, Integer> createBagOfWordsSequential(String text) {
             long startTime = System.currentTimeMillis();
             Map<String, Integer> wordFrequencies = new HashMap<>();
             String[] words = text.split(" ");
@@ -162,29 +172,24 @@ public class Server {
             List<String> words = Arrays.asList(text.split(" "));
             int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
             FindFrequencyWorker[] fnw = new FindFrequencyWorker[NUMBER_OF_THREADS];
-            for (int i = 0; i < words.size(); i += chunkSize) {
-                List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
-                fnw[i] = new FindFrequencyWorker(chunk);
+            for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+                int start = i * chunkSize;
+                int end = (i == NUMBER_OF_THREADS - 1) ? words.size() : (start + chunkSize);
+                fnw[i] = new FindFrequencyWorker(words.subList(start, end));
                 executor.execute(fnw[i]);
             }
 
-            try {
-                executor.awaitTermination(1, TimeUnit.SECONDS);
-
-                Map<String, Integer> finalResult = new HashMap<>();
-                for (FindFrequencyWorker worker : fnw) {
-                    Map<String, Integer> result = worker.getWordCount();
-                    mergeWordFrequencies(finalResult, result);
-                }
-
-                return finalResult;
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return new HashMap<>();
-            } finally {
-                executor.shutdown();
+            executor.shutdown();
+            // Wait until all tasks are finished
+            while (!executor.isTerminated()) {
             }
+
+            Map<String, Integer> finalResult = new HashMap<>();
+            for (FindFrequencyWorker worker : fnw) {
+                Map<String, Integer> result = worker.getWordCount();
+                mergeWordFrequencies(finalResult, result);
+            }
+            return finalResult;
         }
 
         // 1.2 Synchronized Block
@@ -268,6 +273,18 @@ public class Server {
         public String cleanText(String text) {
             text = text.replaceAll("(?<![a-zA-Z])'|'(?![a-zA-Z])", " ").replaceAll("[^a-zA-Z' ]", " ").toLowerCase();
             return text;
+        }
+
+        private Map<String, Integer> sortByValueDescending(Map<String, Integer> map) {
+            return map.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (e1, e2) -> e1,
+                            LinkedHashMap::new
+                    ));
         }
     }
 
