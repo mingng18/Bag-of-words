@@ -7,7 +7,6 @@ package com.tntco.bagofwordsmavenfx;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import static com.tntco.bagofwordsmavenfx.App.showOutputScene;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -26,10 +24,12 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -143,14 +143,208 @@ public class Server {
             return wordFrequencies;
         }
 
-        // TODO: create bag of words using parallel processing method 1
+        // TODO: create bag of words using parallel processing method 1 (Runnable)
+        // 1.1 Merge Sub-Maps
+        private Map<String, Integer> createBagOfWordsWithSubMapMerge(String text) {
+            ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+            List<String> words = Arrays.asList(text.split(" "));
+            int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
 
-        // TODO: create bag of words using parallel processing method 2
+            FindFrequencyWorker[] fnw = new FindFrequencyWorker[NUMBER_OF_THREADS];
+            for (int i = 0; i < words.size(); i += chunkSize) {
+                List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
+                fnw[i] = new FindFrequencyWorker(chunk);
+                executor.execute(fnw[i]);
+            }
+
+            try {
+                executor.awaitTermination(1, TimeUnit.SECONDS);
+
+                Map<String, Integer> finalResult = new HashMap<>();
+                for (FindFrequencyWorker worker : fnw) {
+                    Map<String, Integer> result = worker.getWordCount();
+                    mergeWordFrequencies(finalResult, result);
+                }
+
+                return finalResult;
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return new HashMap<>();
+            } finally {
+                executor.shutdown();
+            }
+        }
+
+        // 1.2 Synchronized Block
+        private Map<String, Integer> createBagOfWordsWithSynchronizedBlock(String text) {
+            ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+            List<String> words = Arrays.asList(text.split(" "));
+            int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
+            BlockingHashMap  blockingHashMap = new BlockingHashMap();
+
+            for (int i = 0; i < words.size(); i += chunkSize) {
+                List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
+                executor.execute(new Worker(chunk, blockingHashMap));
+            }
+
+            executor.shutdown();
+            return blockingHashMap.getWordCount();
+        }
+
+        // TODO: create bag of words using parallel processing method 2 (Callable)
+        // 2.1 Completable Future
+        private Map<String, Integer> createBagOfWordsWithCompletableFuture(String text) {
+            ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+            List<String> words = Arrays.asList(text.split(" "));
+            int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
+
+            List<Callable<Map<String, Integer>>> tasks = new ArrayList<>();
+            for (int i = 0; i < words.size(); i += chunkSize) {
+                List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
+                tasks.add(() -> countWordFrequencies(chunk));
+            }
+
+            try {
+                List<Future<Map<String, Integer>>> futures = executor.invokeAll(tasks);
+
+                CompletableFuture<Map<String, Integer>> resultFuture = CompletableFuture
+                        .allOf(futures.stream()
+                                .map(future -> CompletableFuture.supplyAsync(() -> {
+                                    try {
+                                        return future.get();
+                                    } catch (InterruptedException | ExecutionException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }, executor))
+                                .toArray(CompletableFuture[]::new))
+                        .thenApply(voidResult -> {
+                            // Merge the results
+                            Map<String, Integer> finalResult = new HashMap<>();
+                            for (Future<Map<String, Integer>> future : futures) {
+                                try {
+                                    Map<String, Integer> result = future.get();
+                                    mergeWordFrequencies(finalResult, result);
+                                } catch (InterruptedException | ExecutionException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            return finalResult;
+                        });
+
+                return resultFuture.get();
+
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                return new HashMap<>();
+            } finally {
+                executor.shutdown();
+            }
+        }
+
+        private Map<String, Integer> countWordFrequencies(List<String> words) {
+            Map<String, Integer> wordCount = new HashMap<>();
+            for (String word : words) {
+                wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+            }
+            return wordCount;
+        }
+
+        private void mergeWordFrequencies(Map<String, Integer> mainMap, Map<String, Integer> subMap) {
+            subMap.forEach((word, count) -> mainMap.put(word, mainMap.getOrDefault(word, 0) + count));
+        }
 
         public String cleanText(String text) {
             text = text.replaceAll("(?<![a-zA-Z])'|'(?![a-zA-Z])", " ").replaceAll("[^a-zA-Z' ]", " ").toLowerCase();
             return text;
         }
+    }
+
+}
+
+class FindFrequencyWorker implements Runnable {
+    private final List<String> words;
+    private final HashMap<String, Integer> wordCount = new HashMap<>();
+
+    public FindFrequencyWorker(List<String> words) {
+        this.words = words;
+    }
+
+    @Override
+    public void run() {
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+            }
+        }
+    }
+
+    public HashMap<String, Integer> getWordCount() {
+        return wordCount;
+    }
+}
+
+
+
+class Worker implements Runnable {
+    private BlockingHashMap blockingHashMap;
+    private List<String> words;
+
+    public Worker(List<String> words, BlockingHashMap blockingHashMap) {
+        this.words = words;
+        this.blockingHashMap = blockingHashMap;
+    }
+
+    @Override
+    public void run() {
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                blockingHashMap.writeValue(word);
+            }
+        }
+    }
+}
+
+class BlockingHashMap {
+    private static Map<String, Integer> wordCount;
+    private Lock lock;
+
+    public BlockingHashMap() {
+        this.wordCount = new HashMap<>();
+        this.lock = new ReentrantLock();
+    }
+
+    public synchronized void writeValue(String word) {
+        lock.lock();
+        try {
+            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static Map<String, Integer> getWordCount() {
+        //Sort Map
+        wordCount = sortByValue(wordCount);
+        // Try Print Count
+        for (Map.Entry<String, Integer> entry : wordCount.entrySet()) {
+            System.out.println("Word: " + entry.getKey() + ", Count: " + entry.getValue());
+        }
+        return wordCount;
+    }
+
+    // This one havent really study, from gpt
+    private static Map<String, Integer> sortByValue (Map<String, Integer> map) {
+        // Create a stream from the entries of the map
+        Stream<Map.Entry<String, Integer>> sortedStream = map.entrySet().stream()
+                // Sort the entries by value in descending order
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        // Collect the sorted entries into a LinkedHashMap to preserve the order
+        Map<String, Integer> sortedMap = sortedStream.collect(
+                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+        return sortedMap;
     }
 
 }
