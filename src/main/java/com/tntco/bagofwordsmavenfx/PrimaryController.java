@@ -1,7 +1,9 @@
 package com.tntco.bagofwordsmavenfx;
 
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -30,7 +32,15 @@ public class PrimaryController {
             System.out.println(result);
             System.out.println("returned");
             System.out.println("Total time taken : "+ result.get("totalTimeMethodOne") + " milliseconds");
-            showOutputScene((Map<String, Integer>) result.get("wordFrequencies"));
+            System.out.println("typeof " + result.get("totalTimeMethodOne").getClass().getName());
+            showOutputScene(
+                    (Map<String, Integer>) result.get("wordFrequencies"),
+                    (Long) result.get("totalTimeMethodOne"),
+                    (Map<String, Integer>) result.get("wordFrequenciesTwo"),
+                    (Long) result.get("totalTimeMethodTwo"),
+                    (Map<String, Integer>) result.get("wordFrequenciesThree"),
+                    (Long) result.get("totalTimeMethodThree")
+                    );
         }
     }
 }

@@ -51,12 +51,21 @@ public class App extends Application {
         scene.setRoot(root);
     }
 
-    public static void showOutputScene(Map<String, Integer> wordFrequencies) throws IOException {
+    public static void showOutputScene(
+            Map<String, Integer> wordFrequencies,
+            Long totalTimeMethodOne,
+            Map<String, Integer> wordFrequenciesTwo,
+            Long totalTimeMethodTwo,
+            Map<String, Integer> wordFrequenciesThree,
+            Long totalTimeMethodThree
+            ) throws IOException {
+
         // Ensure path is correct
         FXMLLoader loader = new FXMLLoader(App.class.getResource("secondary.fxml"));
         Parent root = loader.load();
         SecondaryController controller = loader.getController();
-        controller.setWords(wordFrequencies); // Set text in TextArea
+        controller.setWords(wordFrequencies, wordFrequenciesTwo, wordFrequenciesThree); // Set text in TextArea
+        controller.setTime(totalTimeMethodOne, totalTimeMethodTwo, totalTimeMethodThree);
 
         Scene scene = new Scene(root, 640, 480);
         primaryStage.setScene(scene);

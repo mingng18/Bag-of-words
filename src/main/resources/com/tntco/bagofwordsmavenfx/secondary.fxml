@@ -31,11 +31,23 @@
                 <TableColumn fx:id="c2" prefWidth="268.0" text="Frequency" />
             </columns>
         </TableView>
+        <TableView fx:id="tableTwo" layoutX="32.0" layoutY="385.0" prefHeight="215.0" prefWidth="522.0">
+            <columns>
+                <TableColumn fx:id="c3" prefWidth="250.4000244140625" text="Word" />
+                <TableColumn fx:id="c4" prefWidth="268.0" text="Frequency" />
+            </columns>
+        </TableView>
+        <TableView fx:id="tableThree" layoutX="32.0" layoutY="644.0" prefHeight="215.0" prefWidth="522.0">
+            <columns>
+                <TableColumn fx:id="c5" prefWidth="250.4000244140625" text="Word" />
+                <TableColumn fx:id="c6" prefWidth="268.0" text="Frequency" />
+            </columns>
+        </TableView>
       <Text layoutX="32.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation 1: " />
       <Text layoutX="32.0" layoutY="368.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation 2: " />
-      <Text layoutX="425.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " />
-      <Text layoutX="425.0" layoutY="368.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " />
-      <Text layoutX="32.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation 3: " />
-      <Text layoutX="425.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " />
+      <Text fx:id="timerOne" layoutX="425.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " />
+      <Text fx:id="timerTwo"  layoutX="425.0" layoutY="368.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " />
+      <Text layoutX="32.0" layoutY="627.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation 3: " />
+      <Text fx:id="timerThree" layoutX="425.0" layoutY="627.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " />
     </children>
 </AnchorPane>
