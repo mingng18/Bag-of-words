@@ -30,7 +30,7 @@ public class SecondaryController {
     @FXML
     private TableView<WordFrequency> tableThree;
     @FXML
-    private TableColumn<WordFrequency, String> 5;
+    private TableColumn<WordFrequency, String> c5;
     @FXML
     private TableColumn<WordFrequency, Number> c6;
 
