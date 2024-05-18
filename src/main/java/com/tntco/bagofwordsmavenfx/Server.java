@@ -107,7 +107,6 @@ public class Server {
             long methodOneStartTime = System.currentTimeMillis();
             Map<String, Integer> wordFrequencies = createBagOfWordsSequential(text);
             long methodOneEndTime = System.currentTimeMillis();
-            wordFrequencies = sortByValueDescending(wordFrequencies);
             long totalTimeMethodOne = methodOneEndTime - methodOneStartTime;
 
             long methodTwoStartTime = System.currentTimeMillis();
@@ -121,11 +120,11 @@ public class Server {
             long totalTimeMethodThree = methodThreeEndTime - methodThreeStartTime;
 
             Map<String, Object> combinedResponse = new HashMap<>();
-            combinedResponse.put("wordFrequencies", wordFrequencies);
+            combinedResponse.put("wordFrequencies", sortByValueDescending(wordFrequencies));
             combinedResponse.put("totalTimeMethodOne", totalTimeMethodOne);
-            combinedResponse.put("wordFrequenciesTwo", wordFrequenciesTwo);
+            combinedResponse.put("wordFrequenciesTwo", sortByValueDescending(wordFrequenciesTwo));
             combinedResponse.put("totalTimeMethodTwo", totalTimeMethodTwo);
-            combinedResponse.put("wordFrequenciesThree", wordFrequenciesThree);
+            combinedResponse.put("wordFrequenciesThree", sortByValueDescending(wordFrequenciesThree));
             combinedResponse.put("totalTimeMethodThree", totalTimeMethodThree);
 
             // Serialize the combined response
@@ -144,15 +143,14 @@ public class Server {
 
         // create bag of words using sequential processing
         private Map<String, Integer> createBagOfWordsSequential(String text) {
-            long startTime = System.currentTimeMillis();
             Map<String, Integer> wordFrequencies = new HashMap<>();
             String[] words = text.split(" ");
 
             for (String word : words) {
-                wordFrequencies.put(word, wordFrequencies.getOrDefault(word, 0) + 1);
+                if (!word.isEmpty()){
+                    wordFrequencies.put(word, wordFrequencies.getOrDefault(word, 0) + 1);
+                }
             }
-
-            long endTime = System.currentTimeMillis();
             return wordFrequencies;
         }
 
@@ -206,57 +204,32 @@ public class Server {
             List<String> words = Arrays.asList(text.split(" "));
             int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
 
-            List<Callable<Map<String, Integer>>> tasks = new ArrayList<>();
+            List<CompletableFuture<Map<String, Integer>>> futures = new ArrayList<>();
+
             for (int i = 0; i < words.size(); i += chunkSize) {
                 List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
-                tasks.add(() -> countWordFrequencies(chunk));
+                FindFrequencyWorker3 worker = new FindFrequencyWorker3(chunk);
+                CompletableFuture<Map<String, Integer>> future = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        return worker.call();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }, executor);
+                futures.add(future);
             }
 
-            try {
-                List<Future<Map<String, Integer>>> futures = executor.invokeAll(tasks);
-
-                CompletableFuture<Map<String, Integer>> resultFuture = CompletableFuture
-                        .allOf(futures.stream()
-                                .map(future -> CompletableFuture.supplyAsync(() -> {
-                                    try {
-                                        return future.get();
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }, executor))
-                                .toArray(CompletableFuture[]::new))
-                        .thenApply(voidResult -> {
-                            // Merge the results
-                            Map<String, Integer> finalResult = new HashMap<>();
-                            for (Future<Map<String, Integer>> future : futures) {
-                                try {
-                                    Map<String, Integer> result = future.get();
-                                    mergeWordFrequencies(finalResult, result);
-                                } catch (InterruptedException | ExecutionException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            return finalResult;
-                        });
-
-                return resultFuture.get();
-
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-                return new HashMap<>();
-            } finally {
-                executor.shutdown();
-            }
-        }
-
-        private Map<String, Integer> countWordFrequencies(List<String> words) {
-            Map<String, Integer> wordCount = new HashMap<>();
-            for (String word : words) {
-                if (!word.isEmpty()) {
-                    wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+            Map<String, Integer> finalResult = new HashMap<>();
+            futures.forEach(f -> {
+                try {
+                    Map<String, Integer> result = f.get();
+                    mergeWordFrequencies(finalResult, result);
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
                 }
-            }
-            return wordCount;
+            });
+            executor.shutdown();
+            return finalResult;
         }
 
         private void mergeWordFrequencies(Map<String, Integer> mainMap, Map<String, Integer> subMap) {
@@ -345,6 +318,25 @@ class BlockingHashMap {
     }
 
     public static Map<String, Integer> getWordCount() {
+        return wordCount;
+    }
+}
+
+class FindFrequencyWorker3 implements Callable<Map<String, Integer>> {
+    private final List<String> words;
+    private final HashMap<String, Integer> wordCount = new HashMap<>();
+
+    public FindFrequencyWorker3(List<String> words) {
+        this.words = words;
+    }
+
+    @Override
+    public Map<String, Integer> call() throws Exception {
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+            }
+        }
         return wordCount;
     }
 }
