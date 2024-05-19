@@ -37,7 +37,8 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         Server.startServer();
         primaryStage = stage;
-        scene = new Scene(loadFXML("primary"), 640, 480);
+        scene = new Scene(loadFXML("primary"), 600, 600);
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.setTitle("Bag Of Words");
         stage.setOnCloseRequest(windowEvent -> {
@@ -58,7 +59,7 @@ public class App extends Application {
             Long totalTimeMethodTwo,
             Map<String, Integer> wordFrequenciesThree,
             Long totalTimeMethodThree
-            ) throws IOException {
+    ) throws IOException {
 
         // Ensure path is correct
         FXMLLoader loader = new FXMLLoader(App.class.getResource("secondary.fxml"));
