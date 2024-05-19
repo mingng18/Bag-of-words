@@ -33,7 +33,7 @@
                      <children>
                         <HBox alignment="CENTER" prefWidth="200.0" spacing="16.0">
                            <children>
-                              <Text fx:id="titleGeneralTwo" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
+                              <Text fx:id="titleGeneralOne" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
                                  <font>
                                     <Font name="Impact" size="28.0" />
                                  </font>
@@ -63,7 +63,7 @@
                                                       <Font name="Courier New Bold" size="12.0" />
                                                    </font>
                                                 </Text>
-                                                <Text fx:id="wordCountGeneralOne" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                <Text fx:id="wordGeneralOne" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
                                                    <font>
                                                       <Font name="Courier New" size="12.0" />
                                                    </font>
