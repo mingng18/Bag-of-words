@@ -114,7 +114,7 @@ public class Server {
 
             System.out.println("Starting method 2");
             long methodTwoStartTime = System.currentTimeMillis();
-            Map<String, Integer> wordFrequenciesTwo = createBagOfWordsWithSynchronizedBlock(text);
+            Map<String, Integer> wordFrequenciesTwo = createBagOfWordsWithReentrantLock(text);
             long methodTwoEndTime = System.currentTimeMillis();
             long totalTimeMethodTwo = methodTwoEndTime - methodTwoStartTime;
             System.out.println(totalTimeMethodTwo + " milliseconds used in total time method two");
@@ -190,8 +190,8 @@ public class Server {
             return finalResult;
         }
 
-        // 1.2 Synchronized Block
-        private Map<String, Integer> createBagOfWordsWithSynchronizedBlock(String text) {
+        // 1.2 Explicit lock
+        private Map<String, Integer> createBagOfWordsWithReentrantLock(String text) {
             // System.out.println(text);
             ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
             List<String> words = Arrays.asList(text.split(" "));
@@ -315,7 +315,7 @@ class BlockingHashMap {
         this.lock = new ReentrantLock();
     }
 
-    public synchronized void writeValue(String word) {
+    public void writeValue(String word) {
         lock.lock();
         try {
             wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
