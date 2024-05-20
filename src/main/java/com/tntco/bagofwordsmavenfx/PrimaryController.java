@@ -24,23 +24,23 @@ public class PrimaryController {
         fileChooser.setTitle("Open Text File");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Text Files", "*.txt"),
-                new FileChooser.ExtensionFilter("All Files", "*.*")
-        );
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
             Map<String, Object> result = Server.processFile(file.getAbsolutePath());
-            System.out.println(result);
+            // System.out.println(result);
             System.out.println("returned");
-            System.out.println("Total time taken : "+ result.get("totalTimeMethodOne") + " milliseconds");
-            System.out.println("typeof " + result.get("totalTimeMethodOne").getClass().getName());
+            // System.out.println("Total time taken : "+ result.get("totalTimeMethodOne") +
+            // " milliseconds");
+            // System.out.println("typeof " +
+            // result.get("totalTimeMethodOne").getClass().getName());
             showOutputScene(
                     (Map<String, Integer>) result.get("wordFrequencies"),
                     (Long) result.get("totalTimeMethodOne"),
                     (Map<String, Integer>) result.get("wordFrequenciesTwo"),
                     (Long) result.get("totalTimeMethodTwo"),
                     (Map<String, Integer>) result.get("wordFrequenciesThree"),
-                    (Long) result.get("totalTimeMethodThree")
-                    );
+                    (Long) result.get("totalTimeMethodThree"));
         }
     }
 }

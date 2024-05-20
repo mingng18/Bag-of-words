@@ -59,14 +59,25 @@ public class App extends Application {
             Long totalTimeMethodTwo,
             Map<String, Integer> wordFrequenciesThree,
             Long totalTimeMethodThree
-    ) throws IOException {
+            ) throws IOException {
 
         // Ensure path is correct
         FXMLLoader loader = new FXMLLoader(App.class.getResource("secondary.fxml"));
         Parent root = loader.load();
         SecondaryController controller = loader.getController();
+        controller.setTitle("Sequential", "Runnable", "Callable");
         controller.setWords(wordFrequencies, wordFrequenciesTwo, wordFrequenciesThree); // Set text in TextArea
         controller.setTime(totalTimeMethodOne, totalTimeMethodTwo, totalTimeMethodThree);
+
+        Scene scene = new Scene(root, 640, 480);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static void showPrimaryScene() throws IOException {
+        // Ensure path is correct
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("primary.fxml"));
+        Parent root = loader.load();
 
         Scene scene = new Scene(root, 640, 480);
         primaryStage.setScene(scene);

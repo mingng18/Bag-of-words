@@ -8,6 +8,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
+import static com.tntco.bagofwordsmavenfx.App.showPrimaryScene;
+
 import java.io.IOException;
 import java.util.Map;
 import javafx.scene.control.Button;
@@ -120,9 +122,21 @@ public class SecondaryController {
         wordTabThree.setCellValueFactory(new PropertyValueFactory<>("word"));
         frequencyTabThree.setCellValueFactory(new PropertyValueFactory<>("frequency"));
         tableThree.setItems(FXCollections.observableArrayList());
+
+        backButton.setOnMousePressed(event -> {
+            // Your callback code here
+            try {
+                System.out.println("Back button pressed");
+                showPrimaryScene();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
     }
 
-    public void setWords(Map<String, Integer> wordFrequencies, Map<String, Integer> wordFrequenciesTwo, Map<String, Integer> wordFrequenciesThree) {
+    public void setWords(Map<String, Integer> wordFrequencies, Map<String, Integer> wordFrequenciesTwo,
+            Map<String, Integer> wordFrequenciesThree) {
         ObservableList<WordFrequency> items = FXCollections.observableArrayList();
         wordFrequencies.forEach((word, freq) -> items.add(new WordFrequency(word, freq)));
         tableOne.setItems(items);

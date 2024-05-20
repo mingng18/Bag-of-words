@@ -66,6 +66,7 @@ public class Server {
             String text = new String(Files.readAllBytes(Paths.get(filePath)));
             String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
             HttpClient client = HttpClient.newHttpClient();
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8000/search?text=" + encodedText))
                     .build();
@@ -100,31 +101,39 @@ public class Server {
                 return;
             }
 
-            System.out.println("Processing");
+            System.out.println("Cleaning Text");
             text = cleanText(text);
-            System.out.println("Processing Done");
+            System.out.println("Text Cleaning Done");
 
+            System.out.println("Starting method 1");
             long methodOneStartTime = System.currentTimeMillis();
             Map<String, Integer> wordFrequencies = createBagOfWordsSequential(text);
             long methodOneEndTime = System.currentTimeMillis();
             long totalTimeMethodOne = methodOneEndTime - methodOneStartTime;
+            System.out.println(totalTimeMethodOne + " milliseconds used in total time method one");
 
+            System.out.println("Starting method 2");
             long methodTwoStartTime = System.currentTimeMillis();
             Map<String, Integer> wordFrequenciesTwo = createBagOfWordsWithSynchronizedBlock(text);
             long methodTwoEndTime = System.currentTimeMillis();
             long totalTimeMethodTwo = methodTwoEndTime - methodTwoStartTime;
+            System.out.println(totalTimeMethodTwo + " milliseconds used in total time method two");
 
+            System.out.println("Starting method 3");
             long methodThreeStartTime = System.currentTimeMillis();
             Map<String, Integer> wordFrequenciesThree = createBagOfWordsWithCompletableFuture(text);
             long methodThreeEndTime = System.currentTimeMillis();
             long totalTimeMethodThree = methodThreeEndTime - methodThreeStartTime;
+            System.out.println(totalTimeMethodThree + " milliseconds used in total time method three");
 
             Map<String, Object> combinedResponse = new HashMap<>();
-            combinedResponse.put("wordFrequencies", sortByValueDescending(wordFrequencies));
+            combinedResponse.put("wordFrequencies",
+                    sortByValueDescending(wordFrequencies));
             combinedResponse.put("totalTimeMethodOne", totalTimeMethodOne);
-            combinedResponse.put("wordFrequenciesTwo", sortByValueDescending(wordFrequenciesTwo));
+            combinedResponse.put("wordFrequenciesTwo", wordFrequenciesTwo);
             combinedResponse.put("totalTimeMethodTwo", totalTimeMethodTwo);
-            combinedResponse.put("wordFrequenciesThree", sortByValueDescending(wordFrequenciesThree));
+            combinedResponse.put("wordFrequenciesThree",
+                    sortByValueDescending(wordFrequenciesThree));
             combinedResponse.put("totalTimeMethodThree", totalTimeMethodThree);
 
             // Serialize the combined response
@@ -147,7 +156,7 @@ public class Server {
             String[] words = text.split(" ");
 
             for (String word : words) {
-                if (!word.isEmpty()){
+                if (!word.isEmpty()) {
                     wordFrequencies.put(word, wordFrequencies.getOrDefault(word, 0) + 1);
                 }
             }
@@ -183,10 +192,11 @@ public class Server {
 
         // 1.2 Synchronized Block
         private Map<String, Integer> createBagOfWordsWithSynchronizedBlock(String text) {
+            // System.out.println(text);
             ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
             List<String> words = Arrays.asList(text.split(" "));
             int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
-            BlockingHashMap  blockingHashMap = new BlockingHashMap();
+            BlockingHashMap blockingHashMap = new BlockingHashMap();
 
             for (int i = 0; i < words.size(); i += chunkSize) {
                 List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
@@ -249,8 +259,7 @@ public class Server {
                             Map.Entry::getKey,
                             Map.Entry::getValue,
                             (e1, e2) -> e1,
-                            LinkedHashMap::new
-                    ));
+                            LinkedHashMap::new));
         }
     }
 
@@ -277,8 +286,6 @@ class FindFrequencyWorker implements Runnable {
         return wordCount;
     }
 }
-
-
 
 class FindFrequencyWorker2 implements Runnable {
     private BlockingHashMap blockingHashMap;
