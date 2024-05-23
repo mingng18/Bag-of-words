@@ -114,7 +114,7 @@ public class Server {
 
             System.out.println("Starting method 2");
             long methodTwoStartTime = System.currentTimeMillis();
-            Map<String, Integer> wordFrequenciesTwo = createBagOfWordsWithReentrantLock(text);
+            Map<String, Integer> wordFrequenciesTwo = createBagOfWordsWithSynchronizedBlock(text);
             long methodTwoEndTime = System.currentTimeMillis();
             long totalTimeMethodTwo = methodTwoEndTime - methodTwoStartTime;
             System.out.println(totalTimeMethodTwo + " milliseconds used in total time method two");
@@ -127,13 +127,11 @@ public class Server {
             System.out.println(totalTimeMethodThree + " milliseconds used in total time method three");
 
             Map<String, Object> combinedResponse = new HashMap<>();
-            combinedResponse.put("wordFrequencies",
-                    sortByValueDescending(wordFrequencies));
+            combinedResponse.put("wordFrequencies", wordFrequencies);
             combinedResponse.put("totalTimeMethodOne", totalTimeMethodOne);
             combinedResponse.put("wordFrequenciesTwo", wordFrequenciesTwo);
             combinedResponse.put("totalTimeMethodTwo", totalTimeMethodTwo);
-            combinedResponse.put("wordFrequenciesThree",
-                    sortByValueDescending(wordFrequenciesThree));
+            combinedResponse.put("wordFrequenciesThree", wordFrequenciesThree);
             combinedResponse.put("totalTimeMethodThree", totalTimeMethodThree);
 
             // Serialize the combined response
@@ -190,9 +188,8 @@ public class Server {
             return finalResult;
         }
 
-        // 1.2 Explicit lock
-        private Map<String, Integer> createBagOfWordsWithReentrantLock(String text) {
-            // System.out.println(text);
+        // 1.2 Implicit lock
+        private Map<String, Integer> createBagOfWordsWithSynchronizedBlock(String text) {
             ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
             List<String> words = Arrays.asList(text.split(" "));
             int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
@@ -219,14 +216,13 @@ public class Server {
             for (int i = 0; i < words.size(); i += chunkSize) {
                 List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
                 FindFrequencyWorker3 worker = new FindFrequencyWorker3(chunk);
-                CompletableFuture<Map<String, Integer>> future = CompletableFuture.supplyAsync(() -> {
+                futures.add(CompletableFuture.supplyAsync(() -> {
                     try {
                         return worker.call();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-                }, executor);
-                futures.add(future);
+                }, executor));
             }
 
             Map<String, Integer> finalResult = new HashMap<>();
@@ -249,17 +245,6 @@ public class Server {
         public String cleanText(String text) {
             text = text.replaceAll("(?<![a-zA-Z])'|'(?![a-zA-Z])", " ").replaceAll("[^a-zA-Z' ]", " ").toLowerCase();
             return text;
-        }
-
-        private Map<String, Integer> sortByValueDescending(Map<String, Integer> map) {
-            return map.entrySet()
-                    .stream()
-                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            Map.Entry::getValue,
-                            (e1, e2) -> e1,
-                            LinkedHashMap::new));
         }
     }
 
@@ -308,20 +293,13 @@ class FindFrequencyWorker2 implements Runnable {
 
 class BlockingHashMap {
     private static Map<String, Integer> wordCount;
-    private Lock lock;
 
     public BlockingHashMap() {
         this.wordCount = new HashMap<>();
-        this.lock = new ReentrantLock();
     }
 
-    public void writeValue(String word) {
-        lock.lock();
-        try {
-            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
-        } finally {
-            lock.unlock();
-        }
+    public synchronized void writeValue(String word) {
+        wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
     }
 
     public static Map<String, Integer> getWordCount() {
