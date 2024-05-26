@@ -26,10 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -37,7 +34,6 @@ import java.util.stream.Stream;
  */
 public class Server {
 
-    private static final String INPUT_FILE = "C:\\Users\\user\\Documents\\.Y3S2\\WIF3011 CPP\\text_file.txt";
     static Map<String, Integer> wordFrequencies = new HashMap<>();
     private static final int NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors();
     static HttpServer server;
@@ -59,7 +55,7 @@ public class Server {
         server.stop(0);
     }
 
-    // load the file from the client side, then pass to to the server side for
+    // load the file from the client side, then pass to the server side for
     // processing
     public static Map<String, Object> processFile(String filePath) {
         try {
@@ -126,6 +122,13 @@ public class Server {
             long totalTimeMethodThree = methodThreeEndTime - methodThreeStartTime;
             System.out.println(totalTimeMethodThree + " milliseconds used in total time method three");
 
+            System.out.println("Starting method 4");
+            long methodFourStartTime = System.currentTimeMillis();
+            Map<String, Integer> wordFrequenciesFour = createBagOfWordsWithOptimisticLock(text);
+            long methodFourEndTime = System.currentTimeMillis();
+            long totalTimeMethodFour = methodFourEndTime - methodFourStartTime;
+            System.out.println(totalTimeMethodFour + " milliseconds used in total time method four");
+
             Map<String, Object> combinedResponse = new HashMap<>();
             combinedResponse.put("wordFrequencies", wordFrequencies);
             combinedResponse.put("totalTimeMethodOne", totalTimeMethodOne);
@@ -133,6 +136,8 @@ public class Server {
             combinedResponse.put("totalTimeMethodTwo", totalTimeMethodTwo);
             combinedResponse.put("wordFrequenciesThree", wordFrequenciesThree);
             combinedResponse.put("totalTimeMethodThree", totalTimeMethodThree);
+            combinedResponse.put("wordFrequenciesFour", wordFrequenciesFour);
+            combinedResponse.put("totalTimeMethodFour", totalTimeMethodFour);
 
             // Serialize the combined response
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -202,6 +207,45 @@ public class Server {
 
             executor.shutdown();
             return blockingHashMap.getWordCount();
+        }
+
+        // 1.3 Optimistic Lock
+        private Map<String, Integer> createBagOfWordsWithOptimisticLock(String text) {
+            ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+            List<String> words = Arrays.asList(text.split(" "));
+            int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
+            ConcurrentHashMap<String, AtomicInteger> wordCountMap = new ConcurrentHashMap<>();
+
+            for (int i = 0; i < words.size(); i += chunkSize) {
+                List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
+                executor.execute(() -> {
+                    for (String word : chunk) {
+                        if (!word.isEmpty()) {
+                            wordCountMap.compute(word, (k, v) -> {
+                                if (v == null) {
+                                    return new AtomicInteger(1);
+                                } else {
+                                    while (true) {
+                                        int existingValue = v.get();
+                                        if (v.compareAndSet(existingValue, existingValue + 1)) {
+                                            break;
+                                        }
+                                    }
+                                    return v;
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            executor.shutdown();
+            while (!executor.isTerminated()) {
+            }
+
+            Map<String, Integer> finalResult = new HashMap<>();
+            wordCountMap.forEach((word, count) -> finalResult.put(word, count.get()));
+            return finalResult;
         }
 
         // TODO: create bag of words using parallel processing method 2 (Callable)

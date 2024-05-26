@@ -27,7 +27,6 @@ import java.util.concurrent.Executors;
  */
 public class App extends Application {
 
-    private static final String INPUT_FILE = "C:\\Users\\user\\Documents\\.Y3S2\\WIF3011 CPP\\text_file.txt";
     private static final int NUMBER_OF_THREADS = 8;
 
     private static Scene scene;
@@ -58,16 +57,18 @@ public class App extends Application {
             Map<String, Integer> wordFrequenciesTwo,
             Long totalTimeMethodTwo,
             Map<String, Integer> wordFrequenciesThree,
-            Long totalTimeMethodThree
+            Long totalTimeMethodThree,
+            Map<String, Integer> wordFrequenciesFour,
+            Long totalTimeMethodFour
             ) throws IOException {
 
         // Ensure path is correct
         FXMLLoader loader = new FXMLLoader(App.class.getResource("secondary.fxml"));
         Parent root = loader.load();
         SecondaryController controller = loader.getController();
-        controller.setTitle("Sequential", "Runnable", "Callable");
-        controller.setWords(wordFrequencies, wordFrequenciesTwo, wordFrequenciesThree); // Set text in TextArea
-        controller.setTime(totalTimeMethodOne, totalTimeMethodTwo, totalTimeMethodThree);
+        controller.setTitle("Sequential", "Runnable", "Callable", "Optimistic");
+        controller.setWords(wordFrequencies, wordFrequenciesTwo, wordFrequenciesThree, wordFrequenciesFour); // Set text in TextArea
+        controller.setTime(totalTimeMethodOne, totalTimeMethodTwo, totalTimeMethodThree, totalTimeMethodFour);
 
         Scene scene = new Scene(root, 640, 480);
         primaryStage.setScene(scene);
