@@ -15,6 +15,7 @@ import static com.tntco.bagofwordsmavenfx.App.showPrimaryScene;
 import java.io.IOException;
 import java.util.Map;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
 
 public class SecondaryController {
 
@@ -32,7 +33,6 @@ public class SecondaryController {
 
     @FXML
     private TableView<WordFrequency> tableFour;
-
 
     @FXML
     private TableColumn<WordFrequency, String> wordTabOne;
@@ -57,6 +57,18 @@ public class SecondaryController {
 
     @FXML
     private TableColumn<WordFrequency, Number> frequencyTabFour;
+
+    @FXML
+    private Tab tab1;
+    
+    @FXML
+    private Tab tab2;
+
+    @FXML
+    private Tab tab3;
+
+    @FXML
+    private Tab tab4;
 
     @FXML
     private Text titleGeneralOne;
@@ -163,7 +175,6 @@ public class SecondaryController {
         frequencyTabFour.setCellValueFactory(new PropertyValueFactory<>("frequency"));
         tableFour.setItems(FXCollections.observableArrayList());
 
-
         backButton.setOnMousePressed(event -> {
             // Your callback code here
             try {
@@ -204,7 +215,7 @@ public class SecondaryController {
         timerTwo.setText(totalTimeMethodTwo + "ms");
         timerGeneralTwo.setText(totalTimeMethodTwo + "ms");
         timerThree.setText(totalTimeMethodThree + "ms");
-        timerGeneralThree.setText(totalTimeMethodFour + "ms");
+        timerGeneralThree.setText(totalTimeMethodThree + "ms");
         timerFour.setText(totalTimeMethodFour + "ms");
         timerGeneralFour.setText(totalTimeMethodFour + "ms");
         updateBarChart();
@@ -224,12 +235,16 @@ public class SecondaryController {
     public void setTitle(String title1, String title2, String title3, String title4) {
         titleOne.setText(title1 + "");
         titleGeneralOne.setText(title1 + "");
+        tab1.setText(title1 + "");
         titleTwo.setText(title2 + "");
         titleGeneralTwo.setText(title2 + "");
+        tab2.setText(title2 + "");
         titleThree.setText(title3 + "");
         titleGeneralThree.setText(title3 + "");
+        tab3.setText(title3 + "");
         titleFour.setText(title4 + "");
         titleGeneralFour.setText(title4 + "");
+        tab4.setText(title4 + "");
 
         updateBarChart();
     }
@@ -238,7 +253,7 @@ public class SecondaryController {
         descOne.setText(desc1 + "");
         descTwo.setText(desc2 + "");
         descThree.setText(desc3 + "");
-        descFour.setText(desc4+ "");
+        descFour.setText(desc4 + "");
     }
 
     @FXML

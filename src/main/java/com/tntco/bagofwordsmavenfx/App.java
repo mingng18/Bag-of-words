@@ -70,7 +70,7 @@ public class App extends Application {
         controller.setWords(wordFrequencies, wordFrequenciesTwo, wordFrequenciesThree, wordFrequenciesFour); // Set text in TextArea
         controller.setTime(totalTimeMethodOne, totalTimeMethodTwo, totalTimeMethodThree, totalTimeMethodFour);
 
-        Scene scene = new Scene(root, 640, 480);
+        Scene scene = new Scene(root, 600, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -80,7 +80,7 @@ public class App extends Application {
         FXMLLoader loader = new FXMLLoader(App.class.getResource("primary.fxml"));
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, 640, 480);
+        Scene scene = new Scene(root, 600, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

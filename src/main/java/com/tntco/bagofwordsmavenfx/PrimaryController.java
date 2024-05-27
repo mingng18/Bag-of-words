@@ -12,6 +12,9 @@ import static com.tntco.bagofwordsmavenfx.App.showOutputScene;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 
 public class PrimaryController {
 
@@ -19,7 +22,10 @@ public class PrimaryController {
     private Button uploadButton;
 
     @FXML
-    private void handleUploadButton() throws IOException {
+    private Text loading;
+
+    @FXML
+    private void handleUploadButton() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Text File");
         fileChooser.getExtensionFilters().addAll(
@@ -27,22 +33,77 @@ public class PrimaryController {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
-            Map<String, Object> result = Server.processFile(file.getAbsolutePath());
-            // System.out.println(result);
-            System.out.println("returned");
-            // System.out.println("Total time taken : "+ result.get("totalTimeMethodOne") +
-            // " milliseconds");
-            // System.out.println("typeof " +
-            // result.get("totalTimeMethodOne").getClass().getName());
-            showOutputScene(
-                    (Map<String, Integer>) result.get("wordFrequencies"),
-                    (Long) result.get("totalTimeMethodOne"),
-                    (Map<String, Integer>) result.get("wordFrequenciesTwo"),
-                    (Long) result.get("totalTimeMethodTwo"),
-                    (Map<String, Integer>) result.get("wordFrequenciesThree"),
-                    (Long) result.get("totalTimeMethodThree"),
-                    (Map<String, Integer>) result.get("wordFrequenciesFour"),
-                    (Long) result.get("totalTimeMethodFour"));
+
+            uploadButton.setVisible(false);
+            loading.setVisible(true);
+
+            Service<Map<String, Object>> service = new Service<Map<String, Object>>() {
+                @Override
+                protected Task<Map<String, Object>> createTask() {
+                    return new Task<Map<String, Object>>() {
+                        @Override
+                        protected Map<String, Object> call() throws Exception {
+                            return Server.processFile(file.getAbsolutePath());
+                        }
+                    };
+                }
+            };
+
+            service.setOnSucceeded(event -> {
+                Map<String, Object> result = service.getValue();
+                if (result != null) {
+                    try {
+                        showOutputScene(
+                                (Map<String, Integer>) result.get("wordFrequencies"),
+                                (Long) result.get("totalTimeMethodOne"),
+                                (Map<String, Integer>) result.get("wordFrequenciesTwo"),
+                                (Long) result.get("totalTimeMethodTwo"),
+                                (Map<String, Integer>) result.get("wordFrequenciesThree"),
+                                (Long) result.get("totalTimeMethodThree"),
+                                (Map<String, Integer>) result.get("wordFrequenciesFour"),
+                                (Long) result.get("totalTimeMethodFour"));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                uploadButton.setVisible(true);
+                loading.setVisible(false);
+            });
+
+            service.setOnFailed(event -> {
+                Throwable ex = service.getException();
+                ex.printStackTrace();
+                uploadButton.setVisible(true);
+                loading.setVisible(false);
+            });
+
+            service.start();
+
+            // No opening a new thread
+//            Platform.runLater(() -> {
+//                uploadButton.setVisible(false);
+//                loading.setVisible(true);
+//            });
+//            Map<String, Object> result = Server.processFile(file.getAbsolutePath());
+//            Platform.runLater(() -> {
+//                try {
+//                    showOutputScene(
+//                            (Map<String, Integer>) result.get("wordFrequencies"),
+//                            (Long) result.get("totalTimeMethodOne"),
+//                            (Map<String, Integer>) result.get("wordFrequenciesTwo"),
+//                            (Long) result.get("totalTimeMethodTwo"),
+//                            (Map<String, Integer>) result.get("wordFrequenciesThree"),
+//                            (Long) result.get("totalTimeMethodThree"),
+//                            (Map<String, Integer>) result.get("wordFrequenciesFour"),
+//                            (Long) result.get("totalTimeMethodFour"));
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            });
+//
+//            uploadButton.setVisible(true);
+//            loading.setVisible(false);
+
         }
     }
 }
