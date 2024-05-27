@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<TabPane prefHeight="600.0" prefWidth="600.0" styleClass="anchorBackground" stylesheets="@styling.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tntco.bagofwordsmavenfx.SecondaryController">
+  <tabs>
+    <Tab text="General View">
+      <content>
+            <ScrollPane>
+               <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="594.0" styleClass="anchorBackground" stylesheets="@styling.css">
+                     <children>
+                          <Button fx:id="backButton" layoutX="24.0" layoutY="21.0" onAction="#switchToPrimary" style="-fx-background-color: white;">
+                           <graphic>
+                                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                          <Image url="@back.png" />
+                                      </image>
+                                  </ImageView>
+                           </graphic>
+                          </Button>
+                        <VBox layoutX="24.0" layoutY="90.0" prefWidth="552.0" spacing="24.0">
+                           <children>
+                              <BarChart fx:id="barChart" prefHeight="400" prefWidth="600">
+                                 <xAxis>
+                                    <CategoryAxis label="Title" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis label="Time (ms)" />
+                                 </yAxis>
+                              </BarChart>
+                              <HBox alignment="CENTER" prefWidth="200.0" spacing="16.0">
+                                 <children>
+                                    <Text fx:id="titleGeneralOne" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
+                                       <font>
+                                          <Font name="Impact" size="28.0" />
+                                       </font>
+                                    </Text>
+                                    <AnchorPane styleClass="anchorContainer" stylesheets="@styling.css">
+                                       <children>
+                                          <VBox layoutY="4.0" spacing="8.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+                                             <children>
+                                                <HBox>
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="timerGeneralOne" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="1s" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <HBox layoutX="10.0" layoutY="10.0">
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="wordGeneralOne" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefWidth="200.0" spacing="16.0">
+                                 <children>
+                                    <Text fx:id="titleGeneralTwo" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
+                                       <font>
+                                          <Font name="Impact" size="28.0" />
+                                       </font>
+                                    </Text>
+                                    <AnchorPane styleClass="anchorContainer" stylesheets="@styling.css">
+                                       <children>
+                                          <VBox layoutY="4.0" spacing="8.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+                                             <children>
+                                                <HBox>
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="timerGeneralTwo" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="1s" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <HBox layoutX="10.0" layoutY="10.0">
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="wordGeneralTwo" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefWidth="200.0" spacing="16.0">
+                                 <children>
+                                    <Text fx:id="titleGeneralThree" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
+                                       <font>
+                                          <Font name="Impact" size="28.0" />
+                                       </font>
+                                    </Text>
+                                    <AnchorPane styleClass="anchorContainer" stylesheets="@styling.css">
+                                       <children>
+                                          <VBox layoutY="4.0" spacing="8.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+                                             <children>
+                                                <HBox>
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="timerGeneralThree" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="1s" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <HBox layoutX="10.0" layoutY="10.0">
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="wordGeneralThree" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefWidth="200.0" spacing="16.0">
+                                 <children>
+                                    <Text fx:id="titleGeneralFour" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
+                                       <font>
+                                          <Font name="Impact" size="28.0" />
+                                       </font>
+                                    </Text>
+                                    <AnchorPane styleClass="anchorContainer" stylesheets="@styling.css">
+                                       <children>
+                                          <VBox layoutY="4.0" spacing="8.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+                                             <children>
+                                                <HBox>
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="timerGeneralFour" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="1s" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <HBox layoutX="10.0" layoutY="10.0">
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="wordGeneralFour" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </ScrollPane>
+      </content>
+    </Tab>
+    <Tab text="Implementation 1">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox layoutX="24.0" layoutY="22.0" prefHeight="528.0" prefWidth="552.0" spacing="16.0">
+                     <children>
+                        <Text fx:id="titleOne" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
+                           <font>
+                              <Font name="Impact" size="28.0" />
+                           </font>
+                        </Text>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Text fx:id="descOne" strokeType="OUTSIDE" strokeWidth="0.0" text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged." wrappingWidth="400.0" y="32.0">
+                                 <font>
+                                    <Font name="Courier New" size="12.0" />
+                                 </font>
+                              </Text>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
+                                 <children>
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                       <children>
+                                          <HBox prefHeight="24.0" prefWidth="109.0">
+                                             <children>
+                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New Bold" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="timerOne" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="1s" y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="10.0" prefHeight="24.0" prefWidth="109.0">
+                                             <children>
+                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New Bold" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="wordCountOne" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </HBox>
+                          <TableView fx:id="tableOne" prefHeight="365.0" prefWidth="552.0">
+                              <columns>
+                                  <TableColumn fx:id="wordTabOne" prefWidth="277.0" text="Word" />
+                                  <TableColumn fx:id="frequencyTabOne" prefWidth="274.0" text="Frequency" />
+                              </columns>
+                          </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+      </content>
+    </Tab>
+      <Tab text="Implementation 2">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox layoutX="24.0" layoutY="22.0" prefHeight="528.0" prefWidth="552.0" spacing="16.0">
+                     <children>
+                        <Text fx:id="titleTwo" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
+                           <font>
+                              <Font name="Impact" size="28.0" />
+                           </font>
+                        </Text>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Text fx:id="descTwo" strokeType="OUTSIDE" strokeWidth="0.0" text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged." wrappingWidth="400.0" y="32.0">
+                                 <font>
+                                    <Font name="Courier New" size="12.0" />
+                                 </font>
+                              </Text>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
+                                 <children>
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                       <children>
+                                          <HBox prefHeight="24.0" prefWidth="109.0">
+                                             <children>
+                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New Bold" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="timerTwo" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="1s" y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="10.0" prefHeight="24.0" prefWidth="109.0">
+                                             <children>
+                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New Bold" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="wordCountTwo" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableTwo" prefHeight="365.0" prefWidth="552.0">
+                           <columns>
+                              <TableColumn fx:id="wordTabTwo" prefWidth="277.0" text="Word" />
+                              <TableColumn fx:id="frequencyTabTwo" prefWidth="274.0" text="Frequency" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+      <Tab text="Implementation 3">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox layoutX="24.0" layoutY="22.0" prefHeight="528.0" prefWidth="552.0" spacing="16.0">
+                     <children>
+                        <Text fx:id="titleThree" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
+                           <font>
+                              <Font name="Impact" size="28.0" />
+                           </font>
+                        </Text>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Text fx:id="descThree" strokeType="OUTSIDE" strokeWidth="0.0" text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged." wrappingWidth="400.0" y="32.0">
+                                 <font>
+                                    <Font name="Courier New" size="12.0" />
+                                 </font>
+                              </Text>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
+                                 <children>
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                       <children>
+                                          <HBox prefHeight="24.0" prefWidth="109.0">
+                                             <children>
+                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New Bold" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="timerThree" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="1s" y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="10.0" prefHeight="24.0" prefWidth="109.0">
+                                             <children>
+                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New Bold" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="wordCountThree" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableThree" prefHeight="365.0" prefWidth="552.0">
+                           <columns>
+                              <TableColumn fx:id="wordTabThree" prefWidth="277.0" text="Word" />
+                              <TableColumn fx:id="frequencyTabThree" prefWidth="274.0" text="Frequency" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+      <Tab text="Implementation 4">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox layoutX="24.0" layoutY="22.0" prefHeight="528.0" prefWidth="552.0" spacing="16.0">
+                     <children>
+                        <Text fx:id="titleFour" strokeType="OUTSIDE" strokeWidth="0.0" text="Implementation using Thread" y="32.0">
+                           <font>
+                              <Font name="Impact" size="28.0" />
+                           </font>
+                        </Text>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Text fx:id="descFour" strokeType="OUTSIDE" strokeWidth="0.0" text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged." wrappingWidth="400.0" y="32.0">
+                                 <font>
+                                    <Font name="Courier New" size="12.0" />
+                                 </font>
+                              </Text>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
+                                 <children>
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                       <children>
+                                          <HBox prefHeight="24.0" prefWidth="109.0">
+                                             <children>
+                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Taken: " y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New Bold" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="timerFour" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="1s" y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                          <HBox layoutX="10.0" layoutY="10.0" prefHeight="24.0" prefWidth="109.0">
+                                             <children>
+                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New Bold" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="wordCountFour" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                   <font>
+                                                      <Font name="Courier New" size="12.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableFour" prefHeight="365.0" prefWidth="552.0">
+                           <columns>
+                              <TableColumn fx:id="wordTabFour" prefWidth="277.0" text="Word" />
+                              <TableColumn fx:id="frequencyTabFour" prefWidth="274.0" text="Frequency" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+  </tabs>
+</TabPane>
