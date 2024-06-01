@@ -13,7 +13,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -27,11 +29,14 @@
                      <children>
                           <Button fx:id="backButton" layoutX="24.0" layoutY="21.0" onAction="#switchToPrimary" style="-fx-background-color: white;">
                            <graphic>
+                              <StackPane>
+                                 <Circle fill="#CCEEFF" radius="12" />
                                   <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                       <image>
                                           <Image url="@back.png" />
                                       </image>
                                   </ImageView>
+                              </StackPane>
                            </graphic>
                           </Button>
                         <VBox layoutX="24.0" layoutY="90.0" prefWidth="552.0" spacing="24.0">
@@ -253,7 +258,7 @@
                               </Text>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
                                  <children>
-                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0" AnchorPane.leftAnchor="12.0">
                                        <children>
                                           <HBox prefHeight="24.0" prefWidth="109.0">
                                              <children>
@@ -321,7 +326,7 @@
                               </Text>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
                                  <children>
-                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0" AnchorPane.leftAnchor="12.0">
                                        <children>
                                           <HBox prefHeight="24.0" prefWidth="109.0">
                                              <children>
@@ -389,7 +394,7 @@
                               </Text>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
                                  <children>
-                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0" AnchorPane.leftAnchor="12.0">
                                        <children>
                                           <HBox prefHeight="24.0" prefWidth="109.0">
                                              <children>
@@ -457,7 +462,7 @@
                               </Text>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
                                  <children>
-                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0" AnchorPane.leftAnchor="12.0">
                                        <children>
                                           <HBox prefHeight="24.0" prefWidth="109.0">
                                              <children>

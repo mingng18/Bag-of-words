@@ -66,9 +66,10 @@ public class App extends Application {
         FXMLLoader loader = new FXMLLoader(App.class.getResource("secondary.fxml"));
         Parent root = loader.load();
         SecondaryController controller = loader.getController();
-        controller.setTitle("Sequential", "Runnable", "Callable", "Optimistic");
+        controller.setTitle("Sequential", "Runnable", "Pessimistic", "Optimistic");
         controller.setWords(wordFrequencies, wordFrequenciesTwo, wordFrequenciesThree, wordFrequenciesFour); // Set text in TextArea
         controller.setTime(totalTimeMethodOne, totalTimeMethodTwo, totalTimeMethodThree, totalTimeMethodFour);
+        controller.setdesc();
 
         Scene scene = new Scene(root, 600, 600);
         primaryStage.setScene(scene);

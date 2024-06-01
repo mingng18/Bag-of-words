@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import static com.tntco.bagofwordsmavenfx.App.showPrimaryScene;
 
@@ -235,9 +236,11 @@ public class SecondaryController {
     public void setTitle(String title1, String title2, String title3, String title4) {
         titleOne.setText(title1 + "");
         titleGeneralOne.setText(title1 + "");
+        titleGeneralOne.setTextAlignment(TextAlignment.LEFT);
         tab1.setText(title1 + "");
         titleTwo.setText(title2 + "");
         titleGeneralTwo.setText(title2 + "");
+        titleGeneralTwo.setTextAlignment(TextAlignment.LEFT);
         tab2.setText(title2 + "");
         titleThree.setText(title3 + "");
         titleGeneralThree.setText(title3 + "");
@@ -249,11 +252,11 @@ public class SecondaryController {
         updateBarChart();
     }
 
-    public void setdesc(String desc1, String desc2, String desc3, String desc4) {
-        descOne.setText(desc1 + "");
-        descTwo.setText(desc2 + "");
-        descThree.setText(desc3 + "");
-        descFour.setText(desc4 + "");
+    public void setdesc() {
+        descOne.setText("This method processes a given text sequentially to create a bag of words, which is a frequency map of words. It splits the text into words, iterates through each word, and updates the word count in a map. This approach is simple and runs on a single thread, making it straightforward but potentially slow for large texts.");
+        descTwo.setText("This method uses multiple threads to process text in parallel by dividing the text into chunks. Each thread processes a chunk and generates a sub-map of word frequencies. After all threads complete, their results are merged into a final frequency map.");
+        descThree.setText("This method uses pessimistic locking to ensure thread-safe updates to a shared word count map. Multiple threads process chunks of text concurrently, but each update to the shared map is synchronized to prevent concurrent modification issues.");
+        descFour.setText("This method uses optimistic locking which allows all threads to create a copy of the shared memory without any blocking. Each thread processes a chunk of text and uses atomic operations to update word frequencies to the shared map concurrently.");
     }
 
     @FXML

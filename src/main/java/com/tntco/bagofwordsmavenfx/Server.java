@@ -110,14 +110,14 @@ public class Server {
 
             System.out.println("Starting method 2");
             long methodTwoStartTime = System.currentTimeMillis();
-            Map<String, Integer> wordFrequenciesTwo = createBagOfWordsWithSynchronizedBlock(text);
+            Map<String, Integer> wordFrequenciesTwo = createBagOfWordsWithSubMapMerge(text);
             long methodTwoEndTime = System.currentTimeMillis();
             long totalTimeMethodTwo = methodTwoEndTime - methodTwoStartTime;
             System.out.println(totalTimeMethodTwo + " milliseconds used in total time method two");
 
             System.out.println("Starting method 3");
             long methodThreeStartTime = System.currentTimeMillis();
-            Map<String, Integer> wordFrequenciesThree = createBagOfWordsWithCompletableFuture(text);
+            Map<String, Integer> wordFrequenciesThree = createBagOfWordsWithSynchronizedBlock(text);
             long methodThreeEndTime = System.currentTimeMillis();
             long totalTimeMethodThree = methodThreeEndTime - methodThreeStartTime;
             System.out.println(totalTimeMethodThree + " milliseconds used in total time method three");
@@ -166,8 +166,7 @@ public class Server {
             return wordFrequencies;
         }
 
-        // TODO: create bag of words using parallel processing method 1 (Runnable)
-        // 1.1 Merge Sub-Maps
+        // 1.1 Merge Sub-Maps (Runnable)
         private Map<String, Integer> createBagOfWordsWithSubMapMerge(String text) {
             ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
             List<String> words = Arrays.asList(text.split(" "));
@@ -193,7 +192,7 @@ public class Server {
             return finalResult;
         }
 
-        // 1.2 Implicit lock
+        // 1.2 Pessimistic Lock (Implicit lock)
         private Map<String, Integer> createBagOfWordsWithSynchronizedBlock(String text) {
             ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
             List<String> words = Arrays.asList(text.split(" "));
@@ -248,8 +247,7 @@ public class Server {
             return finalResult;
         }
 
-        // TODO: create bag of words using parallel processing method 2 (Callable)
-        // 2.1 Completable Future
+        // 1.4 Completable Future (unused)
         private Map<String, Integer> createBagOfWordsWithCompletableFuture(String text) {
             ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
             List<String> words = Arrays.asList(text.split(" "));
