@@ -236,11 +236,9 @@ public class SecondaryController {
     public void setTitle(String title1, String title2, String title3, String title4) {
         titleOne.setText(title1 + "");
         titleGeneralOne.setText(title1 + "");
-        titleGeneralOne.setTextAlignment(TextAlignment.LEFT);
         tab1.setText(title1 + "");
         titleTwo.setText(title2 + "");
         titleGeneralTwo.setText(title2 + "");
-        titleGeneralTwo.setTextAlignment(TextAlignment.LEFT);
         tab2.setText(title2 + "");
         titleThree.setText(title3 + "");
         titleGeneralThree.setText(title3 + "");
