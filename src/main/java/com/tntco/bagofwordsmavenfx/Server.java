@@ -26,10 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -37,7 +34,6 @@ import java.util.stream.Stream;
  */
 public class Server {
 
-    private static final String INPUT_FILE = "C:\\Users\\user\\Documents\\.Y3S2\\WIF3011 CPP\\text_file.txt";
     static Map<String, Integer> wordFrequencies = new HashMap<>();
     private static final int NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors();
     static HttpServer server;
@@ -59,7 +55,7 @@ public class Server {
         server.stop(0);
     }
 
-    // load the file from the client side, then pass to to the server side for
+    // load the file from the client side, then pass to the server side for
     // processing
     public static Map<String, Object> processFile(String filePath) {
         try {
@@ -126,15 +122,22 @@ public class Server {
             long totalTimeMethodThree = methodThreeEndTime - methodThreeStartTime;
             System.out.println(totalTimeMethodThree + " milliseconds used in total time method three");
 
+            System.out.println("Starting method 4");
+            long methodFourStartTime = System.currentTimeMillis();
+            Map<String, Integer> wordFrequenciesFour = createBagOfWordsWithOptimisticLock(text);
+            long methodFourEndTime = System.currentTimeMillis();
+            long totalTimeMethodFour = methodFourEndTime - methodFourStartTime;
+            System.out.println(totalTimeMethodFour + " milliseconds used in total time method four");
+
             Map<String, Object> combinedResponse = new HashMap<>();
-            combinedResponse.put("wordFrequencies",
-                    sortByValueDescending(wordFrequencies));
+            combinedResponse.put("wordFrequencies", wordFrequencies);
             combinedResponse.put("totalTimeMethodOne", totalTimeMethodOne);
             combinedResponse.put("wordFrequenciesTwo", wordFrequenciesTwo);
             combinedResponse.put("totalTimeMethodTwo", totalTimeMethodTwo);
-            combinedResponse.put("wordFrequenciesThree",
-                    sortByValueDescending(wordFrequenciesThree));
+            combinedResponse.put("wordFrequenciesThree", wordFrequenciesThree);
             combinedResponse.put("totalTimeMethodThree", totalTimeMethodThree);
+            combinedResponse.put("wordFrequenciesFour", wordFrequenciesFour);
+            combinedResponse.put("totalTimeMethodFour", totalTimeMethodFour);
 
             // Serialize the combined response
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -190,9 +193,8 @@ public class Server {
             return finalResult;
         }
 
-        // 1.2 Synchronized Block
+        // 1.2 Implicit lock
         private Map<String, Integer> createBagOfWordsWithSynchronizedBlock(String text) {
-            // System.out.println(text);
             ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
             List<String> words = Arrays.asList(text.split(" "));
             int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
@@ -207,6 +209,45 @@ public class Server {
             return blockingHashMap.getWordCount();
         }
 
+        // 1.3 Optimistic Lock
+        private Map<String, Integer> createBagOfWordsWithOptimisticLock(String text) {
+            ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+            List<String> words = Arrays.asList(text.split(" "));
+            int chunkSize = (int) Math.ceil((double) words.size() / NUMBER_OF_THREADS);
+            ConcurrentHashMap<String, AtomicInteger> wordCountMap = new ConcurrentHashMap<>();
+
+            for (int i = 0; i < words.size(); i += chunkSize) {
+                List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
+                executor.execute(() -> {
+                    for (String word : chunk) {
+                        if (!word.isEmpty()) {
+                            wordCountMap.compute(word, (k, v) -> {
+                                if (v == null) {
+                                    return new AtomicInteger(1);
+                                } else {
+                                    while (true) {
+                                        int existingValue = v.get();
+                                        if (v.compareAndSet(existingValue, existingValue + 1)) {
+                                            break;
+                                        }
+                                    }
+                                    return v;
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            executor.shutdown();
+            while (!executor.isTerminated()) {
+            }
+
+            Map<String, Integer> finalResult = new HashMap<>();
+            wordCountMap.forEach((word, count) -> finalResult.put(word, count.get()));
+            return finalResult;
+        }
+
         // TODO: create bag of words using parallel processing method 2 (Callable)
         // 2.1 Completable Future
         private Map<String, Integer> createBagOfWordsWithCompletableFuture(String text) {
@@ -219,14 +260,13 @@ public class Server {
             for (int i = 0; i < words.size(); i += chunkSize) {
                 List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
                 FindFrequencyWorker3 worker = new FindFrequencyWorker3(chunk);
-                CompletableFuture<Map<String, Integer>> future = CompletableFuture.supplyAsync(() -> {
+                futures.add(CompletableFuture.supplyAsync(() -> {
                     try {
                         return worker.call();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-                }, executor);
-                futures.add(future);
+                }, executor));
             }
 
             Map<String, Integer> finalResult = new HashMap<>();
@@ -249,17 +289,6 @@ public class Server {
         public String cleanText(String text) {
             text = text.replaceAll("(?<![a-zA-Z])'|'(?![a-zA-Z])", " ").replaceAll("[^a-zA-Z' ]", " ").toLowerCase();
             return text;
-        }
-
-        private Map<String, Integer> sortByValueDescending(Map<String, Integer> map) {
-            return map.entrySet()
-                    .stream()
-                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            Map.Entry::getValue,
-                            (e1, e2) -> e1,
-                            LinkedHashMap::new));
         }
     }
 
@@ -308,20 +337,13 @@ class FindFrequencyWorker2 implements Runnable {
 
 class BlockingHashMap {
     private static Map<String, Integer> wordCount;
-    private Lock lock;
 
     public BlockingHashMap() {
         this.wordCount = new HashMap<>();
-        this.lock = new ReentrantLock();
     }
 
     public synchronized void writeValue(String word) {
-        lock.lock();
-        try {
-            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
-        } finally {
-            lock.unlock();
-        }
+        wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
     }
 
     public static Map<String, Integer> getWordCount() {
