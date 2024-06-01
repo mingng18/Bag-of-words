@@ -19,6 +19,11 @@
                 <Font name="Impact" size="44.0" />
             </font>
         </Text>
+      <Text fx:id="loading" fill="WHITE" layoutX="251.0" layoutY="469.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading..." visible="false">
+         <font>
+            <Font name="Courier New" size="16.0" />
+         </font>
+      </Text>
         <Button fx:id="uploadButton" layoutX="260.0" layoutY="448.0" mnemonicParsing="false" onAction="#handleUploadButton" stylesheets="@styling.css" text="Upload">
          <font>
             <Font name="Courier New Bold" size="16.0" />

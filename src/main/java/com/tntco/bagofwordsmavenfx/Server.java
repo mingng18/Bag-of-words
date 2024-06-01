@@ -220,19 +220,7 @@ public class Server {
                 executor.execute(() -> {
                     for (String word : chunk) {
                         if (!word.isEmpty()) {
-                            wordCountMap.compute(word, (k, v) -> {
-                                if (v == null) {
-                                    return new AtomicInteger(1);
-                                } else {
-                                    while (true) {
-                                        int existingValue = v.get();
-                                        if (v.compareAndSet(existingValue, existingValue + 1)) {
-                                            break;
-                                        }
-                                    }
-                                    return v;
-                                }
-                            });
+                            wordCountMap.computeIfAbsent(word, k -> new AtomicInteger()).incrementAndGet();
                         }
                     }
                 });
