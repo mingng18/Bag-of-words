@@ -201,10 +201,19 @@ public class Server {
 
             for (int i = 0; i < words.size(); i += chunkSize) {
                 List<String> chunk = words.subList(i, Math.min(i + chunkSize, words.size()));
-                executor.execute(new FindFrequencyWorker2(chunk, blockingHashMap));
+                executor.execute(() -> {
+                    for (String word : chunk) {
+                        if (!word.isEmpty()) {
+                            blockingHashMap.writeValue(word);
+                        }
+                    }
+                });
             }
 
             executor.shutdown();
+            while (!executor.isTerminated()) {
+            }
+
             return blockingHashMap.getWordCount();
         }
 
@@ -302,25 +311,6 @@ class FindFrequencyWorker implements Runnable {
     }
 }
 
-class FindFrequencyWorker2 implements Runnable {
-    private BlockingHashMap blockingHashMap;
-    private List<String> words;
-
-    public FindFrequencyWorker2(List<String> words, BlockingHashMap blockingHashMap) {
-        this.words = words;
-        this.blockingHashMap = blockingHashMap;
-    }
-
-    @Override
-    public void run() {
-        for (String word : words) {
-            if (!word.isEmpty()) {
-                blockingHashMap.writeValue(word);
-            }
-        }
-    }
-}
-
 class BlockingHashMap {
     private static Map<String, Integer> wordCount;
 
@@ -346,7 +336,7 @@ class FindFrequencyWorker3 implements Callable<Map<String, Integer>> {
     }
 
     @Override
-    public Map<String, Integer> call() throws Exception {
+    public Map<String, Integer> call() {
         for (String word : words) {
             if (!word.isEmpty()) {
                 wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
