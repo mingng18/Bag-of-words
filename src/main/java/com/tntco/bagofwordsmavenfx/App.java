@@ -59,7 +59,8 @@ public class App extends Application {
             Map<String, Integer> wordFrequenciesThree,
             Long totalTimeMethodThree,
             Map<String, Integer> wordFrequenciesFour,
-            Long totalTimeMethodFour
+            Long totalTimeMethodFour,
+            Integer totalWordCount
             ) throws IOException {
 
         // Ensure path is correct
@@ -69,6 +70,8 @@ public class App extends Application {
         controller.setTitle("Sequential", "Runnable", "Pessimistic", "Optimistic");
         controller.setWords(wordFrequencies, wordFrequenciesTwo, wordFrequenciesThree, wordFrequenciesFour); // Set text in TextArea
         controller.setTime(totalTimeMethodOne, totalTimeMethodTwo, totalTimeMethodThree, totalTimeMethodFour);
+        controller.setWordCount(totalWordCount);
+        controller.setUniqueWordCount(wordFrequencies.size(), wordFrequenciesTwo.size(), wordFrequenciesThree.size(),wordFrequenciesFour.size());
         controller.setdesc();
 
         Scene scene = new Scene(root, 600, 600);

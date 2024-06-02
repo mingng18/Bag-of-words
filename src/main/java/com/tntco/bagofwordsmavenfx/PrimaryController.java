@@ -61,7 +61,8 @@ public class PrimaryController {
                                 (Map<String, Integer>) result.get("wordFrequenciesThree"),
                                 (Long) result.get("totalTimeMethodThree"),
                                 (Map<String, Integer>) result.get("wordFrequenciesFour"),
-                                (Long) result.get("totalTimeMethodFour"));
+                                (Long) result.get("totalTimeMethodFour"),
+                                (Integer) result.get("totalWordCount"));
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }

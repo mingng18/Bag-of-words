@@ -9,7 +9,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 import static com.tntco.bagofwordsmavenfx.App.showPrimaryScene;
 
@@ -106,6 +105,18 @@ public class SecondaryController {
 
     @FXML
     private Text wordGeneralFour;
+
+    @FXML
+    public Text uniqueGeneralOne;
+
+    @FXML
+    public Text uniqueGeneralTwo;
+
+    @FXML
+    public Text uniqueGeneralThree;
+
+    @FXML
+    public Text uniqueGeneralFour;
 
     @FXML
     private Text titleOne;
@@ -222,15 +233,22 @@ public class SecondaryController {
         updateBarChart();
     }
 
-    public void setWordCount(String count1, String count2, String count3, String count4) {
-        wordCountOne.setText(count1 + "");
-        wordGeneralOne.setText(count1 + "");
-        wordCountTwo.setText(count2 + "");
-        wordGeneralTwo.setText(count2 + "");
-        wordCountThree.setText(count3 + "");
-        wordGeneralThree.setText(count3 + "");
-        wordCountFour.setText(count4 + "");
-        wordGeneralFour.setText(count4 + "");
+    public void setWordCount(int count) {
+        wordCountOne.setText(count + "");
+        wordGeneralOne.setText(count + "");
+        wordCountTwo.setText(count + "");
+        wordGeneralTwo.setText(count + "");
+        wordCountThree.setText(count + "");
+        wordGeneralThree.setText(count + "");
+        wordCountFour.setText(count + "");
+        wordGeneralFour.setText(count + "");
+    }
+
+    public void setUniqueWordCount(int count1, int count2, int count3, int count4) {
+        uniqueGeneralOne.setText(count1 + "");
+        uniqueGeneralTwo.setText(count2 + "");
+        uniqueGeneralThree.setText(count3 + "");
+        uniqueGeneralFour.setText(count4 + "");
     }
 
     public void setTitle(String title1, String title2, String title3, String title4) {
@@ -251,7 +269,7 @@ public class SecondaryController {
     }
 
     public void setdesc() {
-        descOne.setText("This method processes a given text sequentially to create a bag of words, which is a frequency map of words. It splits the text into words, iterates through each word, and updates the word count in a map. This approach is simple and runs on a single thread, making it straightforward but potentially slow for large texts.");
+        descOne.setText("This method processes a given text sequentially to create a bag of words, which is a frequency map of words. It splits the text into words, iterates through each word, and updates the word count in a map. This approach is simple and runs on a single thread, making it straightforward.");
         descTwo.setText("This method uses multiple threads to process text in parallel by dividing the text into chunks. Each thread processes a chunk and generates a sub-map of word frequencies. After all threads complete, their results are merged into a final frequency map.");
         descThree.setText("This method uses pessimistic locking to ensure thread-safe updates to a shared word count map. Multiple threads process chunks of text concurrently, but each update to the shared map is synchronized to prevent concurrent modification issues.");
         descFour.setText("This method uses optimistic locking which allows all threads to create a copy of the shared memory without any blocking. Each thread processes a chunk of text and uses atomic operations to update word frequencies to the shared map concurrently.");

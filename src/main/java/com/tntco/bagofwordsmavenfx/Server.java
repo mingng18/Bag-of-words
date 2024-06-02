@@ -138,6 +138,7 @@ public class Server {
             combinedResponse.put("totalTimeMethodThree", totalTimeMethodThree);
             combinedResponse.put("wordFrequenciesFour", wordFrequenciesFour);
             combinedResponse.put("totalTimeMethodFour", totalTimeMethodFour);
+            combinedResponse.put("totalWordCount", text.split(" ").length);
 
             // Serialize the combined response
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -192,7 +193,7 @@ public class Server {
             return finalResult;
         }
 
-        // 1.2 Pessimistic Lock (Implicit lock)
+        // 1.2 Pessimistic Lock (Synchronized Block)
         private Map<String, Integer> createBagOfWordsWithSynchronizedBlock(String text) {
             ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
             List<String> words = Arrays.asList(text.split(" "));
@@ -217,7 +218,7 @@ public class Server {
             return blockingHashMap.getWordCount();
         }
 
-        // 1.3 Optimistic Lock
+        // 1.3 Optimistic Lock (Atomic Integer)
         private Map<String, Integer> createBagOfWordsWithOptimisticLock(String text) {
             ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
             List<String> words = Arrays.asList(text.split(" "));
