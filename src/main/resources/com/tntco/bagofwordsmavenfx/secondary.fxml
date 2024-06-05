@@ -43,7 +43,7 @@
                            <children>
                               <BarChart fx:id="barChart" legendVisible="false" prefHeight="400" prefWidth="600">
                                  <xAxis>
-                                    <CategoryAxis label="Title" />
+                                    <CategoryAxis label="Approaches" />
                                  </xAxis>
                                  <yAxis>
                                     <NumberAxis label="Time (ms)" />
