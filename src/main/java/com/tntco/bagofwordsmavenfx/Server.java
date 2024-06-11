@@ -82,14 +82,15 @@ public class Server {
         }
     }
 
-    // Handling the request from the client at the server side
+    // Handling the request from the client at the server sideS
     private static class WordCountHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
 
             String query = httpExchange.getRequestURI().getQuery();
-            String[] keyValue = query.split("=");
+            // Ensure split only 1 time which is text= part only
+            String[] keyValue = query.split("=", 2);
             String action = keyValue[0];
             String text = keyValue[1];
             if (!action.equals("text")) {
@@ -283,7 +284,9 @@ public class Server {
         }
 
         public String cleanText(String text) {
+            System.out.println("before cleaning" + text);
             text = text.replaceAll("(?<![a-zA-Z])'|'(?![a-zA-Z])", " ").replaceAll("[^a-zA-Z' ]", " ").toLowerCase();
+            System.out.println("fuck the text" + text);
             return text;
         }
     }

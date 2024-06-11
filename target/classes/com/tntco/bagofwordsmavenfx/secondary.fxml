@@ -13,7 +13,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -27,18 +29,21 @@
                      <children>
                           <Button fx:id="backButton" layoutX="24.0" layoutY="21.0" onAction="#switchToPrimary" style="-fx-background-color: white;">
                            <graphic>
+                              <StackPane>
+                                 <Circle fill="#CCEEFF" radius="12" />
                                   <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                       <image>
                                           <Image url="@back.png" />
                                       </image>
                                   </ImageView>
+                              </StackPane>
                            </graphic>
                           </Button>
                         <VBox layoutX="24.0" layoutY="90.0" prefWidth="552.0" spacing="24.0">
                            <children>
                               <BarChart fx:id="barChart" legendVisible="false" prefHeight="400" prefWidth="600">
                                  <xAxis>
-                                    <CategoryAxis label="Title" />
+                                    <CategoryAxis label="Approaches" />
                                  </xAxis>
                                  <yAxis>
                                     <NumberAxis label="Time (ms)" />
@@ -71,12 +76,26 @@
                                                 </HBox>
                                                 <HBox layoutX="10.0" layoutY="10.0">
                                                    <children>
-                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Word Count: " y="32.0">
                                                          <font>
                                                             <Font name="Courier New Bold" size="12.0" />
                                                          </font>
                                                       </Text>
                                                       <Text fx:id="wordGeneralOne" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Unique Word Count: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="uniqueGeneralOne" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
                                                          <font>
                                                             <Font name="Courier New" size="12.0" />
                                                          </font>
@@ -116,12 +135,26 @@
                                                 </HBox>
                                                 <HBox layoutX="10.0" layoutY="10.0">
                                                    <children>
-                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Word Count: " y="32.0">
                                                          <font>
                                                             <Font name="Courier New Bold" size="12.0" />
                                                          </font>
                                                       </Text>
                                                       <Text fx:id="wordGeneralTwo" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Unique Word Count: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="uniqueGeneralTwo" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
                                                          <font>
                                                             <Font name="Courier New" size="12.0" />
                                                          </font>
@@ -161,12 +194,26 @@
                                                 </HBox>
                                                 <HBox layoutX="10.0" layoutY="10.0">
                                                    <children>
-                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Word Count: " y="32.0">
                                                          <font>
                                                             <Font name="Courier New Bold" size="12.0" />
                                                          </font>
                                                       </Text>
                                                       <Text fx:id="wordGeneralThree" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Unique Word Count: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="uniqueGeneralThree" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
                                                          <font>
                                                             <Font name="Courier New" size="12.0" />
                                                          </font>
@@ -206,12 +253,26 @@
                                                 </HBox>
                                                 <HBox layoutX="10.0" layoutY="10.0">
                                                    <children>
-                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Word Count: " y="32.0">
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Word Count: " y="32.0">
                                                          <font>
                                                             <Font name="Courier New Bold" size="12.0" />
                                                          </font>
                                                       </Text>
                                                       <Text fx:id="wordGeneralFour" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Unique Word Count: " y="32.0">
+                                                         <font>
+                                                            <Font name="Courier New Bold" size="12.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fx:id="uniqueGeneralFour" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="100" y="32.0">
                                                          <font>
                                                             <Font name="Courier New" size="12.0" />
                                                          </font>
@@ -253,7 +314,7 @@
                               </Text>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
                                  <children>
-                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0" AnchorPane.leftAnchor="12.0">
                                        <children>
                                           <HBox prefHeight="24.0" prefWidth="109.0">
                                              <children>
@@ -321,7 +382,7 @@
                               </Text>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
                                  <children>
-                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0" AnchorPane.leftAnchor="12.0">
                                        <children>
                                           <HBox prefHeight="24.0" prefWidth="109.0">
                                              <children>
@@ -389,7 +450,7 @@
                               </Text>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
                                  <children>
-                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0" AnchorPane.leftAnchor="12.0">
                                        <children>
                                           <HBox prefHeight="24.0" prefWidth="109.0">
                                              <children>
@@ -457,7 +518,7 @@
                               </Text>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="anchorContainer" stylesheets="@styling.css">
                                  <children>
-                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0">
+                                    <VBox layoutX="22.0" layoutY="31.0" prefHeight="48.0" prefWidth="109.0" AnchorPane.leftAnchor="12.0">
                                        <children>
                                           <HBox prefHeight="24.0" prefWidth="109.0">
                                              <children>
