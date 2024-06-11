@@ -284,9 +284,7 @@ public class Server {
         }
 
         public String cleanText(String text) {
-            System.out.println("before cleaning" + text);
             text = text.replaceAll("(?<![a-zA-Z])'|'(?![a-zA-Z])", " ").replaceAll("[^a-zA-Z' ]", " ").toLowerCase();
-            System.out.println("fuck the text" + text);
             return text;
         }
     }
